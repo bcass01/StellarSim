@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 import glob
 import plotly.graph_objects as go
 
@@ -21,6 +22,51 @@ def load_csv_data(directory):
     # Concatenate all dataframes
     all_data = pd.concat(dataframes, ignore_index=True)
     return all_data
+
+def calculate_total_mass(data):
+    """
+    Calculate the total mass of the cluster at each time step.
+
+    Parameters:
+    - data: A DataFrame containing star data with columns including 'Mass (MSun)' and 'Simulation Time (Myr)'.
+
+    Returns:
+    - A DataFrame with 'Simulation Time (Myr)' and 'Total Mass (MSun)' columns.
+    """
+    total_mass_by_time = (
+        data.groupby("Simulation Time (Myr)")["Mass (MSun)"]
+        .sum()
+        .reset_index()
+        .rename(columns={"Mass (MSun)": "Total Mass (MSun)"})
+    )
+    return total_mass_by_time
+
+def plot_total_mass_over_time(total_mass_data):
+    """
+    Plot the total mass of the cluster over time.
+
+    Parameters:
+    - total_mass_data: A DataFrame with 'Simulation Time (Myr)' and 'Total Mass (MSun)' columns.
+    """
+    plt.figure(figsize=(10, 6))
+    plt.plot(
+        total_mass_data["Simulation Time (Myr)"],
+        total_mass_data["Total Mass (MSun)"],
+        marker="o",
+        color="blue",
+        linestyle="-",
+        label="Total Mass",
+    )
+    plt.xlabel("Simulation Time (Myr)")
+    plt.ylabel("Total Mass (M☉)")
+    plt.ylim(bottom=0)
+    plt.title("Total Mass of the Cluster Over Time")
+    plt.grid(True)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("mass_over_time.png")
+    plt.show()
+
 
 def create_3d_animation(data):
     """
@@ -151,6 +197,14 @@ def create_3d_animation(data):
     fig.write_html("star_positions_animation.html")
 
 # Example usage
-directory = "./run4/csv1"
+directory = "./csv1"
 data = load_csv_data(directory)
+
+#Calculate total mass at each time step
+total_mass_data = calculate_total_mass(data)
+
+# Plot the change in total mass over time
+plot_total_mass_over_time(total_mass_data)
+
+# Make animation
 create_3d_animation(data)

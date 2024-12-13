@@ -140,7 +140,7 @@ class StarClusterSimulation:
 
                 
                 # Plot star distances and truncation radius
-                self.plot_star_distances_and_truncation(step, truncation_radius, sim_time)
+                #self.plot_star_distances_and_truncation(step, truncation_radius, sim_time)
                 
                 # Remove escaped stars
                 self.remove_escaped_stars(truncation_radius)
@@ -212,7 +212,7 @@ class StarClusterSimulation:
 
 
 def main():
-    N = 2000
+    N = 1000
     t_end = 1000 | units.Myr
     dt = 0.1 | units.Myr
     w0 = 3
@@ -224,7 +224,7 @@ def main():
     sim.initialize_stellar()
     sim.evolve(density_threshold=density_threshold)
     sim.plot_density_profile()
-    sim.plot_total_mass()
+    #sim.plot_total_mass()
 
 if __name__ == "__main__":
     main()
